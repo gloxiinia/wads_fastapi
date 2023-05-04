@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Path
 from typing import Optional
 from pydantic import BaseModel
-import uuid
 
 todo_app = FastAPI()
 
@@ -25,10 +24,10 @@ class Todo(BaseModel):
     text: str
     completed: bool
 
-# class UpdateTodo(BaseModel):
-#     uid: Optional[str] = None
-#     text: Optional[str] = None
-#     completed: Optional[bool] = None  
+class UpdateTodo(BaseModel):
+    uid: Optional[str] = None
+    text: Optional[str] = None
+    completed: Optional[bool] = None  
 
 # defining the user dictionary
 
@@ -128,23 +127,24 @@ def update_user(uid : str, user : UpdateUser):
 
     return users[uid]
 
-# @todo_app.put("/update-todo")
-# def update_todo(todo_id : str, todo : UpdateTodo):
-#     if todo_id not in todos:
-#         return {"error" : errors[5]}
+@todo_app.put("/update-todo/{todo_id}")
+def update_todo(todo_id : str, todo : UpdateTodo):
+    if todo_id not in todos:
+        return {"error" : errors[5]}
     
-#     if todo.uid != None:
-#         todo[todo_id].uid = todo.uid
+    if todo.uid != None:
+        todos[todo_id].uid = todo.uid
     
-#     if todo.text != None:
-#         todo[todo_id].text = todo.text
+    if todo.text != None:
+        todos[todo_id].text = todo.text
 
-#     if todo.completed != None:
-#         todo[todo_id].completed = todo.completed
+    if todo.completed != None:
+        todos[todo_id].completed = todo.completed
 
-#     return todos[todo_id]
+    return todos[todo_id]
 
 # DELETE METHOD
+
 @todo_app.delete("/delete-user/{uid}")
 def delete_user(uid: str):
     if uid not in users:
